@@ -33,4 +33,4 @@ def update(catalog, output):
 
 if __name__ == "__main__":
     home = Path.home()
-    update(home / ".codex/sqlite/codex.db", home / ".logseq/settings/.codex-link-titles.json")
+    update(home / ".codex/sqlite/codex.db", home / ".logseq/storages/logseq-codex-links/titles.json")

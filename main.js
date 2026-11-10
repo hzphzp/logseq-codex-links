@@ -14,15 +14,12 @@ async function main() {
     }
   `);
   const host = window.parent;
-  // The 2.0.2 Electron bridge returns Transit unless the caller requests JS.
-  const root = await host.apis.doAction(["getLogseqDotDirRoot", "js-obj"]);
-  const path = root + "/settings/.codex-link-titles.json";
   let titles = new Map();
   let loading;
 
   function refresh() {
     if (loading) return loading;
-    loading = host.apis.doAction(["readFile", path, "js-obj"]).then(raw => {
+    loading = logseq.FileStorage.getItem("titles.json").then(raw => {
       if (!raw) return;
       const next = new Map();
       for (const [hostId, threadId, title] of JSON.parse(raw)) {

@@ -1,0 +1,34 @@
+name: Publish marketplace plugin
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify and package
+        run: |
+          set -eu
+          node --check main.js
+          node --check paste.js
+          python3 -m py_compile install.py update_titles.py
+          id=$(node -p 'require("./package.json").logseq.id')
+          version=$(node -p 'require("./package.json").version')
+          test "$GITHUB_REF_NAME" = "v$version"
+          mkdir -p "$id/docs"
+          cp -R vendor package.json LICENSE README.md index.html main.js paste.js codex-logo.png icon.svg install.py update_titles.py THIRD-PARTY.md "$id/"
+          cp docs/*.png "$id/docs/"
+          zip -qr "$id.zip" "$id"
+          unzip -tq "$id.zip"
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          id=$(node -p 'require("./package.json").logseq.id')
+          gh release create "$GITHUB_REF_NAME" "$id.zip" --verify-tag --latest --title "$GITHUB_REF_NAME · Codex Chat Links" --notes-file "docs/$GITHUB_REF_NAME.md"

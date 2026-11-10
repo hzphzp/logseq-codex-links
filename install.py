@@ -15,9 +15,13 @@ def main():
     agent = home / "Library/LaunchAgents" / (label + ".plist")
     domain = "gui/" + str(os.getuid())
     plugin.mkdir(parents=True, exist_ok=True)
-    shutil.copytree(src / "vendor", plugin / "vendor", dirs_exist_ok=True)
-    for name in ("package.json", "index.html", "main.js", "paste.js", "codex-logo.png", "update_titles.py", "README.md"):
-        shutil.copy2(src / name, plugin / name)
+    if src.resolve() != plugin.resolve():
+        shutil.copytree(src / "vendor", plugin / "vendor", dirs_exist_ok=True)
+        (plugin / "docs").mkdir(exist_ok=True)
+        shutil.copy2(src / "docs/paste.png", plugin / "docs/paste.png")
+        for name in ("package.json", "index.html", "main.js", "paste.js", "codex-logo.png", "icon.svg",
+                     "update_titles.py", "install.py", "README.md", "LICENSE", "THIRD-PARTY.md"):
+            shutil.copy2(src / name, plugin / name)
     python = "/usr/bin/python3"
     updater = str(plugin / "update_titles.py")
     subprocess.run([python, "-I", updater], check=True)

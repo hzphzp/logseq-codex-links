@@ -1,6 +1,6 @@
 {
   "name": "logseq-codex-links",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "在 Logseq 块中粘贴带标题的 Codex 会话链接",
   "type": "module",
   "main": "index.html",
@@ -12,6 +12,10 @@
     "title": "Codex 会话链接",
     "effect": true,
     "supportsDB": true,
-    "supportsDBOnly": true
-  }
+    "supportsDBOnly": true,
+    "icon": "./icon.svg"
+  },
+  "author": "hzphzp",
+  "repository": "https://github.com/hzphzp/logseq-codex-links",
+  "license": "MIT"
 }
